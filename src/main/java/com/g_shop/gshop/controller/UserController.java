@@ -21,13 +21,8 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/verify", method = RequestMethod.GET)
-    public String verifyUser(@RequestParam String decodedToken) throws FirebaseAuthException {
-        try{
+    public boolean verifyUser(@RequestParam String decodedToken) throws FirebaseAuthException {
         return userService.verifyUser(decodedToken);
-        }
-        catch(Exception e) {
-            return null;
-        }
     }
     
     @RequestMapping(value = "/test", method = RequestMethod.GET)
