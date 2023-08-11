@@ -24,7 +24,12 @@ public class ProductController {
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     public List<Product> getProducts(@RequestParam String category) throws FirebaseAuthException, InterruptedException, ExecutionException {
-        return productService.getProducts(category);
+        try{
+            return productService.getProducts(category);
+        }
+        catch(Exception e) {
+            return null;
+        }
     }
     
     
