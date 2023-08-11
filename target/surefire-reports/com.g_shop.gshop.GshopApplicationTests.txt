@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.g_shop.gshop.GshopApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.666 s - in com.g_shop.gshop.GshopApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.575 s - in com.g_shop.gshop.GshopApplicationTests
