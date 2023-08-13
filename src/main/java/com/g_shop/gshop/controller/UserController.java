@@ -41,6 +41,11 @@ public class UserController {
         return userService.updateUser(data);
     }
 
+    @RequestMapping(value = "/add_to_cart", method = RequestMethod.POST)
+    public boolean addToCart(@RequestBody Map<String, Object> data) {
+        return userService.addToCart(data);
+    }
+
     @RequestMapping(value = "/test_update_user", method = RequestMethod.POST)
     public User updateUserTest(@RequestBody Map<String, Object> data) {
         User user = User.fromJson(data);
@@ -48,12 +53,8 @@ public class UserController {
     }
     
     @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public List<Integer> test(@RequestParam Integer num) throws FirebaseAuthException {
-        List<Integer> list = new ArrayList<Integer>();
-        list.add(num);
-        list.add(num+1);
-        
-        return list;
+    public boolean test(@RequestParam String pID) throws FirebaseAuthException {
+        return userService.productHasQuantity(pID);
     }
 
     @RequestMapping(value = "/test2", method = RequestMethod.GET)

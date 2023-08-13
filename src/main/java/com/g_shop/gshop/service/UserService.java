@@ -2,12 +2,12 @@ package com.g_shop.gshop.service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import org.springframework.stereotype.Service;
 import com.g_shop.gshop.models.User;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
@@ -19,6 +19,9 @@ import com.google.firebase.cloud.FirestoreClient;
 public class UserService {
     
     private static final String USERS_COLLECTION = "users";
+    private static final String CARTS_COLLECTION = "carts";
+    private static final String PRODUCTS_COLLECTION = "products";
+    private static final String PURCHASES_COLLECTION = "purchases";
 
     public FirebaseToken verifyUser(String decodedToken) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -84,6 +87,107 @@ public class UserService {
         catch(Exception e) {
             return false;
         }
+    }
+
+    public boolean addToCart(Map<String, Object> data) {
+        String decodedToken = null;
+        String pID = null;
+
+        try {
+            decodedToken = (String)data.get("decodedToken");
+            pID = (String)data.get("pID");
+        } catch (Exception e) {
+            return false;
+        }
+
+        FirebaseToken token = verifyUser(decodedToken);
+        if(token == null){
+            System.out.println("Token not found");
+            return false;
+        }
+        if(!isProduct(pID)) {
+            System.out.println("Product does not exist");
+            return false;
+        }
+        if(!productHasQuantity(pID)) {
+            System.out.println("Product's quantity is 0");
+            return false;
+        }
+
+        Firestore firestore = FirestoreClient.getFirestore();
+        CollectionReference cartsCollectionRef = firestore.collection(CARTS_COLLECTION);
+        DocumentReference userCartDocRef = cartsCollectionRef.document(token.getUid());
+        CollectionReference productsInCartCollectionRef = userCartDocRef.collection("products");
+
+        Map<String, Object> pIDMap = new HashMap<String, Object>();
+        pIDMap.put("pID", pID);
+        try {
+            ApiFuture<DocumentReference> cartProductDocFuture = productsInCartCollectionRef.add(pIDMap);
+            
+            while(!cartProductDocFuture.isDone()) {
+                if(cartProductDocFuture.isCancelled())
+                    return false;
+            }
+
+            DocumentReference cartProductDoc = cartProductDocFuture.get();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+        
+    }
+
+    public boolean productHasQuantity(String pID) {
+        Firestore firestore = FirestoreClient.getFirestore();
+        CollectionReference productsCollectionRef = firestore.collection(PRODUCTS_COLLECTION);
+        DocumentReference productDocRef = productsCollectionRef.document(pID);
+
+        try {
+            ApiFuture<DocumentSnapshot> productDocSnapshotFuture = productDocRef.get();
+
+        while(!productDocSnapshotFuture.isDone()) {
+            if(productDocSnapshotFuture.isCancelled()) {
+                return false;
+            }
+        }
+
+        DocumentSnapshot productDocSnapshot = productDocSnapshotFuture.get();
+
+        Long quantity = (Long)productDocSnapshot.getData().get("quantity");
+        System.out.println(quantity);
+
+        return quantity > 0;
+        }
+        catch(Exception e) {
+            System.out.println(e.toString());
+            return false;
+        }
+    }
+
+    public boolean isProduct(String pID) {
+        Firestore firestore = FirestoreClient.getFirestore();
+        CollectionReference productsCollectionRef = firestore.collection(PRODUCTS_COLLECTION);
+        if(pID == null)
+            return false;
+
+        DocumentReference productDocRef = productsCollectionRef.document(pID);
+
+        try {
+            ApiFuture<DocumentSnapshot> productDocSnapshotFuture = productDocRef.get();
+
+        while(!productDocSnapshotFuture.isDone()) {
+            if(productDocSnapshotFuture.isCancelled()) {
+                return false;
+            }
+        }
+
+        DocumentSnapshot productDocSnapshot = productDocSnapshotFuture.get();
+        return productDocSnapshot.exists();
+        }
+        catch(Exception e) {
+            return false;
+        }
+        
     }
 
     private Map<String, Object> extractUpdatableData(Map<String, Object> data) {
