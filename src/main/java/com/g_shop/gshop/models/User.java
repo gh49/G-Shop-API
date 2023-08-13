@@ -1,5 +1,7 @@
 package com.g_shop.gshop.models;
 
+import java.util.Map;
+
 public class User {
     
     private String uID;
@@ -7,6 +9,14 @@ public class User {
     private String phoneNumber;
     private String gedner;
     private String dateOfBirth;
+
+    public User(String uID, String name, String phoneNumber, String gender, String dateOfBirth) {
+        this.uID = uID;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.gedner = gender;
+        this.dateOfBirth = dateOfBirth;
+    }
 
     public String getUID() {
         return this.uID;
@@ -46,6 +56,16 @@ public class User {
 
     public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public static User fromJson(Map<String, Object> data) {
+        String uID = (String)data.get("uID");
+        String name = (String)data.get("name");
+        String phoneNumber = (String)data.get("phoneNumber");
+        String gender = (String)data.get("gender");
+        String dateOfBirth = (String)data.get("dateOfBirth");
+
+        return new User(uID, name, phoneNumber, gender, dateOfBirth);
     }
 
 

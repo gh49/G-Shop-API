@@ -2,6 +2,7 @@ package com.g_shop.gshop.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_by_category", method = RequestMethod.GET)
     public List<Product> getProducts(@RequestParam String category) throws FirebaseAuthException, InterruptedException, ExecutionException {
         try{
             return productService.getProducts(category);
@@ -30,6 +31,11 @@ public class ProductController {
         catch(Exception e) {
             return null;
         }
+    }
+
+    @RequestMapping(value = "/get_details", method = RequestMethod.GET)
+    public Map<String, Object> getProductDetails(@RequestParam String pID) throws FirebaseAuthException, InterruptedException, ExecutionException {
+        return productService.getProductDetails(pID);
     }
     
     
