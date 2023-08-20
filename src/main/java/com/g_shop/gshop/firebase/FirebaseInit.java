@@ -23,7 +23,7 @@ public class FirebaseInit {
         try{
             String deployPath = "/etc/secrets/";
             String testPath = "./";
-            FileInputStream serviceAccount = new FileInputStream(testPath + "firebase_admin_key.json");
+            FileInputStream serviceAccount = new FileInputStream(deployPath + "firebase_admin_key.json");
             GoogleCredentials credentials;
             credentials = GoogleCredentials.fromStream(serviceAccount);
             //credentials = getDefaultCredentials();
