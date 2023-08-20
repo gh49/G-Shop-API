@@ -7,14 +7,14 @@ public class User {
     private String uID;
     private String name;
     private String phoneNumber;
-    private String gedner;
+    private String gender;
     private String dateOfBirth;
 
     public User(String uID, String name, String phoneNumber, String gender, String dateOfBirth) {
         this.uID = uID;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.gedner = gender;
+        this.gender = gender;
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -42,12 +42,12 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getGedner() {
-        return this.gedner;
+    public String getGender() {
+        return this.gender;
     }
 
-    public void setGedner(String gedner) {
-        this.gedner = gedner;
+    public void setGender(String gedner) {
+        this.gender = gedner;
     }
 
     public String getDateOfBirth() {

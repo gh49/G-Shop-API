@@ -83,4 +83,30 @@ public class ProductService {
             return null;
         }
     }
+
+    public boolean isProduct(String pID) {
+        Firestore firestore = FirestoreClient.getFirestore();
+        CollectionReference productsCollectionRef = firestore.collection(PRODUCTS_COLLECTION);
+        if(pID == null)
+            return false;
+
+        DocumentReference productDocRef = productsCollectionRef.document(pID);
+
+        try {
+            ApiFuture<DocumentSnapshot> productDocSnapshotFuture = productDocRef.get();
+
+        while(!productDocSnapshotFuture.isDone()) {
+            if(productDocSnapshotFuture.isCancelled()) {
+                return false;
+            }
+        }
+
+        DocumentSnapshot productDocSnapshot = productDocSnapshotFuture.get();
+        return productDocSnapshot.exists();
+        }
+        catch(Exception e) {
+            return false;
+        }
+        
+    }
 }
